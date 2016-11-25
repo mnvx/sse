@@ -1,11 +1,12 @@
 <?php
 
-header("Content-Type: text/event-stream");
-
 sse('my_event', 'getSomeData');
 
-function sse($eventName, callable $func)
+function sse(string $eventName, callable $func, int $interval = 1)
 {
+    header("Content-Type: text/event-stream");
+    header('Cache-Control: no-cache');
+
     while (1) {
         echo "event: $eventName\n";
         echo 'data: ' . json_encode($func());
@@ -13,7 +14,7 @@ function sse($eventName, callable $func)
 
         ob_end_flush();
         flush();
-        sleep(1);
+        sleep($interval);
     }
 }
 
